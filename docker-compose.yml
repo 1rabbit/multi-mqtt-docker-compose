@@ -1,0 +1,61 @@
+x-common: &common
+  build: .
+  restart: unless-stopped
+  environment: &common-env
+    MQTT_ALLOW_ANONYMOUS: "false"
+    MQTT_PERSISTENCE: "false"
+
+services:
+  chirpstack1:
+    <<: *common
+    ports: ["1883:1883"]
+    environment:
+      <<: *common-env
+      MQTT_USERNAME: chirpstack1
+      MQTT_PASSWORD: changeme
+
+  chirpstack2:
+    <<: *common
+    ports: ["1884:1883"]
+    environment:
+      <<: *common-env
+      MQTT_USERNAME: chirpstack2
+      MQTT_PASSWORD: changeme
+
+  analyzer:
+    <<: *common
+    ports: ["1885:1883"]
+    environment:
+      <<: *common-env
+      MQTT_USERNAME: analyzer
+      MQTT_PASSWORD: changeme
+
+  ingest:
+    <<: *common
+    ports: ["1886:1883"]
+    environment:
+      <<: *common-env
+      MQTT_USERNAME: ingest
+      MQTT_PASSWORD: changeme
+
+  multiplexer:
+    <<: *common
+    ports: ["1887:1883"]
+    environment:
+      <<: *common-env
+      MQTT_USERNAME: multiplexer
+      MQTT_PASSWORD: changeme
+
+  broker-tls:
+    <<: *common
+    ports: ["8883:1883"]
+    environment:
+      <<: *common-env
+      MQTT_USERNAME: broker-tls
+      MQTT_PASSWORD: changeme
+      MQTT_TLS_ENABLED: "true"
+      MQTT_CAFILE: /certs/chain.pem
+      MQTT_CERTFILE: /certs/fullchain.pem
+      MQTT_KEYFILE: /certs/privkey.pem
+    volumes:
+      - ./certs:/certs:ro
